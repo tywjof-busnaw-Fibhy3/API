@@ -8,6 +8,7 @@
   <pre id="output"></pre>
 
   <script>
+    // โหลด Facebook SDK และตั้งค่าเริ่มต้น
     window.fbAsyncInit = function() {
       FB.init({
         appId      : '3773528312945054',  // ใส่ App ID ของคุณ
@@ -26,18 +27,29 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
+    // ฟังก์ชันล็อกอินและดึงข้อมูล
     function loginAndFetch() {
       FB.login(function(response) {
         if (response.authResponse) {
-          FB.api('/me', { fields: 'id,name,email' }, function(response) {
-            console.log(response);
-            document.getElementById('output').textContent = 
-              `ID: ${response.id}\nName: ${response.name}\nEmail: ${response.email || 'No email permission granted'}`;
-          });
+          FB.api(
+            '/me',
+            'GET',
+            { fields: 'id,name,email,picture' },  // ขอข้อมูลพื้นฐานพร้อมรูปโปรไฟล์
+            function(response) {
+              if (response && !response.error) {
+                console.log(response);
+                // แสดงข้อมูลบนหน้าเว็บ
+                document.getElementById('output').textContent = JSON.stringify(response, null, 2);
+              } else {
+                console.error('Error fetching data:', response.error);
+                document.getElementById('output').textContent = 'Error fetching data';
+              }
+            }
+          );
         } else {
           alert('User cancelled login or did not fully authorize.');
         }
-      }, { scope: 'email' });  // ขอแค่ email เท่านั้น
+      }, { scope: 'email' });  // ขอแค่ email permission เท่านั้น
     }
   </script>
 </body>
