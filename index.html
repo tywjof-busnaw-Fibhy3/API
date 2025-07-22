@@ -34,19 +34,16 @@
       FB.login(function(response) {
         if (response.authResponse) {
           FB.api('/me', 'GET', {
-            fields: 'id,name,email,picture'
+            fields: 'id,name,email'
           }, function(response) {
-            if (response && !response.error) {
-              document.getElementById("output").textContent = JSON.stringify(response, null, 2);
-            } else {
-              alert('API Error: ' + response.error.message);
-            }
+            console.log(response);
+            document.getElementById("output").innerHTML = JSON.stringify(response, null, 2);
           });
         } else {
-          alert('Login cancelled or not authorized');
+          alert('User cancelled login or did not fully authorize.');
         }
       }, {
-        scope: 'email' // ✅ ใช้แค่ email ก่อนเท่านั้น
+        scope: 'email'
       });
     }
   </script>
