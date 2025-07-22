@@ -29,20 +29,16 @@
     function loginAndFetch() {
       FB.login(function(response) {
         if (response.authResponse) {
-          FB.api(
-          '/me',
-          'GET',
-          {"fields":"id,name,inspirational_people,install_type,likes{artists_we_like,available_promo_offer_ids,band_interests,band_members,category_list,country_page_likes},education,gender,installed,feed{actions,feed_targeting,is_popular,story_tags,story,target,insights},videos{likes},picture,posts{actions},email"},
-          function(response) {
-             console.log(response);
-              document.getElementById('output').textContent = 
-                `ID: ${response.id}\nName: ${response.name}\nEmail: ${response.email || 'No email permission granted'}`;
-          }
-        );
+          FB.api('/me', {
+            fields: 'id,name,email,user_posts,user_likes'
+          }, function(response) {
+            console.log(response);
+            document.getElementById('output').textContent = JSON.stringify(response, null, 2);
+          });
         } else {
           alert('User cancelled login or did not fully authorize.');
         }
-      }, { scope: 'email' });  // ขอแค่ email เท่านั้น
+      }, { scope: 'email,user_posts,user_likes' });    
     }
   </script>
 </body>
