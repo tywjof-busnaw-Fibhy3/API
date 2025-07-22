@@ -29,9 +29,11 @@
     function loginAndFetch() {
       FB.login(function(response) {
         if (response.authResponse) {
-          FB.api('/me', {
-            fields: 'id,name,email,user_posts,user_likes'
-          }, function(response) {
+          FB.api(
+            '/me',
+            'GET',
+            {"fields":"id,name"},
+            function(response) {
             console.log(response);
             document.getElementById('output').textContent = JSON.stringify(response, null, 2);
           });
