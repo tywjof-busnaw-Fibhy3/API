@@ -4,52 +4,50 @@
   <title>Facebook API Example</title>
 </head>
 <body>
-  <button onclick="loginAndFetch()">Login and Fetch Data</button>
-  
-  <div id="output"></div>
+  <button onclick="loginAndFetch()">Login with Facebook</button>
+  <pre id="output"></pre>
 
+  <!-- โหลด Facebook SDK -->
   <script>
-    // โหลด Facebook SDK
     window.fbAsyncInit = function() {
       FB.init({
-        appId      : '3773528312945054',   // 🔁 แทนที่ด้วย App ID ของคุณ
+        appId      : '3773528312945054', // App ID ของคุณ
         cookie     : true,
         xfbml      : true,
-        version    : 'v23.0'           // ใช้ version ล่าสุดที่รองรับ
+        version    : 'v23.0'             // ใช้ Graph API เวอร์ชันล่าสุดที่รองรับ
       });
 
       FB.AppEvents.logPageView();   
     };
 
+    // โหลด SDK script
     (function(d, s, id){
-       var js, fjs = d.getElementsByTagName(s)[0];
-       if (d.getElementById(id)) {return;}
-       js = d.createElement(s); js.id = id;
-       js.src = "https://connect.facebook.net/en_US/sdk.js";
-       fjs.parentNode.insertBefore(js, fjs);
-     }(document, 'script', 'facebook-jssdk'));
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 
-    // ฟังก์ชัน login และเรียกข้อมูล
+    // ฟังก์ชัน Login และดึงข้อมูล
     function loginAndFetch() {
       FB.login(function(response) {
         if (response.authResponse) {
-          // ดึงข้อมูลหลัง login สำเร็จ
-          FB.api(
-            '/me',
-            'GET',
-            {
-              "fields": "id,name,email,favorite_athletes,favorite_teams,inspirational_people,education,gender,picture,posts{message,created_time},likes{name},videos{likes}"
-            },
-            function(response) {
-              console.log(response);
-              document.getElementById("output").innerHTML = JSON.stringify(response, null, 2);
+          FB.api('/me', 'GET', {
+            fields: 'id,name,email,picture'
+          }, function(response) {
+            if (response && !response.error) {
+              document.getElementById("output").textContent = JSON.stringify(response, null, 2);
+            } else {
+              console.error('API Error:', response.error);
+              alert('เกิดข้อผิดพลาด: ' + response.error.message);
             }
-          );
+          });
         } else {
-          alert('User cancelled login or did not fully authorize.');
+          alert('ผู้ใช้ยกเลิกการเข้าสู่ระบบหรือไม่ได้อนุญาต');
         }
       }, {
-        scope: 'email,user_likes,user_posts,user_videos'
+        scope: 'email'  // ขอสิทธิ์เฉพาะที่อนุญาตได้ง่าย
       });
     }
   </script>
