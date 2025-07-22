@@ -39,15 +39,14 @@
             if (response && !response.error) {
               document.getElementById("output").textContent = JSON.stringify(response, null, 2);
             } else {
-              console.error('API Error:', response.error);
-              alert('เกิดข้อผิดพลาด: ' + response.error.message);
+              alert('API Error: ' + response.error.message);
             }
           });
         } else {
-          alert('ผู้ใช้ยกเลิกการเข้าสู่ระบบหรือไม่ได้อนุญาต');
+          alert('Login cancelled or not authorized');
         }
       }, {
-        scope: 'email'  // ขอสิทธิ์เฉพาะที่อนุญาตได้ง่าย
+        scope: 'email' // ✅ ใช้แค่ email ก่อนเท่านั้น
       });
     }
   </script>
